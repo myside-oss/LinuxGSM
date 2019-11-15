@@ -45,7 +45,6 @@ else
 	fi
 
 	fix.sh
-	install_stats.sh
 	install_complete.sh
 	core_exit.sh
 fi

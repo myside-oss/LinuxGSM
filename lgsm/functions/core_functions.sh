@@ -428,11 +428,6 @@ fn_fetch_function
 
 # Info
 
-info_stats.sh(){
-functionfile="${FUNCNAME}"
-fn_fetch_function
-}
-
 info_config.sh(){
 functionfile="${FUNCNAME}"
 fn_fetch_function
@@ -634,11 +629,6 @@ functionfile="${FUNCNAME}"
 fn_fetch_function
 }
 install_server_files.sh(){
-functionfile="${FUNCNAME}"
-fn_fetch_function
-}
-
-install_stats.sh(){
 functionfile="${FUNCNAME}"
 fn_fetch_function
 }
