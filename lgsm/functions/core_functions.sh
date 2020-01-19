@@ -550,6 +550,11 @@ functionfile="${FUNCNAME[0]}"
 fn_fetch_function
 }
 
+update_minecraft_paper.sh(){
+functionfile="${FUNCNAME[0]}"
+fn_fetch_function
+}
+
 update_minecraft_bedrock.sh(){
 functionfile="${FUNCNAME[0]}"
 fn_fetch_function

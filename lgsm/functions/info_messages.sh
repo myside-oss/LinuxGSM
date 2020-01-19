@@ -811,6 +811,17 @@ fn_info_message_minecraft(){
 	} | column -s $'\t' -t
 }
 
+fn_info_message_minecraft_paper(){
+	echo -e "netstat -atunp | grep java"
+	echo -e ""
+	{
+		echo -e "${lightblue}DESCRIPTION\tDIRECTION\tPORT\tPROTOCOL${default}"
+		echo -e "> Game\tINBOUND\t${port}\ttcp"
+		echo -e "> Query\tINBOUND\t${queryport}\tudp"
+		echo -e "> Rcon\tINBOUND\t${rconport}\ttcp"
+	} | column -s $'\t' -t
+}
+
 fn_info_message_minecraft_bedrock(){
 	echo -e "netstat -atunp | grep bedrock_serv"
 	echo -e ""
@@ -1424,6 +1435,8 @@ fn_info_message_select_engine(){
 		fn_info_message_unturned
 	elif [ "${shortname}" == "mc" ]; then
 		fn_info_message_minecraft
+	elif [ "${shortname}" == "mcp" ]; then
+		fn_info_message_minecraft_paper
 	elif [ "${shortname}" == "mh" ]; then
 		fn_info_message_mordhau
 	elif [ "${shortname}" == "mohaa" ]; then
