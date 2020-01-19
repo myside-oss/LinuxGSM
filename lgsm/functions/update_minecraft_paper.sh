@@ -47,7 +47,7 @@ fn_update_minecraft_compare(){
 		echo -e "* Local build: ${red}${localbuilddigit}${default}"
 		echo -e "* Remote build: ${green}${remotebuilddigt}${default}"
 		fn_script_log_info "Update available"
-		fn_script_log_info "Local build: $(localbuilddigit}"
+		fn_script_log_info "Local build: ${localbuilddigit}"
 		fn_script_log_info "Remote build: ${remotebuilddigt}"
 		fn_script_log_info "${localbuilddigit} > ${remotebuilddigt}"
 		fn_sleep_time
