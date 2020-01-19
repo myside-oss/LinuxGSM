@@ -33,7 +33,7 @@ fn_update_minecraft_compare() {
 	# Removes dots so if statement can compare version numbers.
 	fn_print_dots "Checking for update: ${remotelocation}"
 	localbuild=$(unzip -p ${serverfiles}/paperclip.jar version.json || echo -n "unknown")
-	if [ ${localbuild} -eq "unknown" ]; then
+	if [ "${localbuild}" -eq "unknown" ]; then
 		localbuilddigit="unknown"
 	else
 		localbuilddigit=$(echo -n ${localbuild} | jq -r '.number' | sed 's/.$//')
