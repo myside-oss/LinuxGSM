@@ -8,7 +8,7 @@ local commandname="UPDATE"
 local commandaction="Update"
 local function_selfname=$(basename "$(readlink -f "${BASH_SOURCE[0]}")")
 
-fn_update_minecraft_dl(){
+fn_update_minecraft_dl() {
 	latestdetails=$(curl -s ${update_url}/lastSuccessfulBuild/api/json)
 	buildartifact=$(echo -n ${latestdetails} | jq -r '.artifacts[0].fileName' | sed 's/.$//')
 	buildurl="$(echo -n ${latestdetails} | jq -r '.url' | sed 's/.$//')"
@@ -29,18 +29,18 @@ fn_update_minecraft_dl(){
 	fi
 }
 
-fn_update_minecraft_compare(){
+fn_update_minecraft_compare() {
 	# Removes dots so if statement can compare version numbers.
 	fn_print_dots "Checking for update: ${remotelocation}"
 	localbuild=$(unzip -p ${serverfiles}/paperclip.jar version.json || echo -n "unknown")
-	if [ ${localbuild} -eq "unknown" ]; then 
+	if [ ${localbuild} -eq "unknown" ]; then
 		localbuilddigit="unknown"
 	else
 		localbuilddigit=$(echo -n ${localbuild} | jq -r '.number' | sed 's/.$//')
 	fi
 	remotebuild=$(curl -s 'https://papermc.io/ci/job/Paper-1.15/lastSuccessfulBuild/api/json')
 	remotebuilddigit=$(echo -n ${remotebuild} | jq -r '.number' | sed 's/.$//')
-	if [ "${localbuilddigit}" -ne "${remotebuilddigit}" ]||[ "${forceupdate}" == "1" ]; then
+	if [ "${localbuilddigit}" -ne "${remotebuilddigit}" ] || [ "${forceupdate}" == "1" ]; then
 		fn_print_ok_nl "Checking for update: ${remotelocation}"
 		echo -en "\n"
 		echo -e "Update available"
@@ -102,5 +102,6 @@ if [ "${installer}" == "1" ]; then
 else
 	fn_print_dots "Checking for update: ${remotelocation}"
 	fn_script_log_info "Checking for update: ${remotelocation}"
+
 	fn_update_minecraft_compare
 fi
