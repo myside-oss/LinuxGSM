@@ -10,10 +10,13 @@ local function_selfname=$(basename "$(readlink -f "${BASH_SOURCE[0]}")")
 
 fn_update_minecraft_dl() {
 	latestdetails=$(curl -s ${update_url}/lastSuccessfulBuild/api/json)
-	buildartifact=$(echo -n ${latestdetails} | jq -r '.artifacts[0].fileName' | sed 's/.$//')
-	buildurl="$(echo -n ${latestdetails} | jq -r '.url' | sed 's/.$//')"
+	buildartifact=$(echo -n ${latestdetails} | jq -r '.artifacts[0].fileName')
+	buildurl="$(echo -n ${latestdetails} | jq -r '.url')"
 	artifacturl="${buildurl::-1}/artifact/${buildartifact}"
+	echo -n "${latestdetails}" > "${tmpdir}/version.json"
+	cd ${tmpdir}
 	fn_fetch_file "${artifacturl}" "${tmpdir}" "${buildartifact}"
+	zip -ur "${buildartifact}" "version.json"
 	echo -e "copying to ${serverfiles}...\c"
 	cp "${tmpdir}/${buildartifact}" "${serverfiles}/paperclip.jar"
 	local exitcode=$?
@@ -32,24 +35,25 @@ fn_update_minecraft_dl() {
 fn_update_minecraft_compare() {
 	# Removes dots so if statement can compare version numbers.
 	fn_print_dots "Checking for update: ${remotelocation}"
-	localbuild=$(unzip -p ${serverfiles}/paperclip.jar version.json || echo -n "unknown")
-	if [ "${localbuild}" -eq "unknown" ]; then
-		localbuilddigit="unknown"
+	localbuild=$(unzip -p ${serverfiles}/paperclip.jar version.json 2>/dev/null)
+	local exitcode=$?
+	if [ "${exitcode}" == "0" ]; then 
+		localbuilddigt=$(echo -n ${localbuild} | jq -r '.number')
 	else
-		localbuilddigit=$(echo -n ${localbuild} | jq -r '.number' | sed 's/.$//')
+		localbuilddigt="00"
 	fi
-	remotebuild=$(curl -s 'https://papermc.io/ci/job/Paper-1.15/lastSuccessfulBuild/api/json')
-	remotebuilddigit=$(echo -n ${remotebuild} | jq -r '.number' | sed 's/.$//')
-	if [ "${localbuilddigit}" -ne "${remotebuilddigit}" ] || [ "${forceupdate}" == "1" ]; then
+	remotebuild=$(curl -s ${update_url}/lastSuccessfulBuild/api/json 2>/dev/null)
+	remotebuilddigt=$(echo -n ${remotebuild} | jq -r '.number' 2>/dev/null || echo -n "00")
+	if [ "${localbuilddigt}" -ne "${remotebuilddigt}" ] || [ "${forceupdate}" == "1" ]; then
 		fn_print_ok_nl "Checking for update: ${remotelocation}"
 		echo -en "\n"
 		echo -e "Update available"
-		echo -e "* Local build: ${red}${localbuilddigit}${default}"
+		echo -e "* Local build: ${red}${localbuilddigt}${default}"
 		echo -e "* Remote build: ${green}${remotebuilddigt}${default}"
 		fn_script_log_info "Update available"
-		fn_script_log_info "Local build: ${localbuilddigit}"
-		fn_script_log_info "Remote build: ${remotebuilddigt}"
-		fn_script_log_info "${localbuilddigit} > ${remotebuilddigt}"
+		fn_script_log_info "Local build: #${localbuilddigt}"
+		fn_script_log_info "Remote build: #${remotebuilddigt}"
+		fn_script_log_info "${localbuilddigt} > ${remotebuilddigt}"
 		fn_sleep_time
 		echo -en "\n"
 		echo -en "applying update.\r"
