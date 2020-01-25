@@ -16,7 +16,7 @@ fn_update_minecraft_dl() {
 	echo -n "${latestdetails}" > "${tmpdir}/version.json"
 	cd ${tmpdir}
 	fn_fetch_file "${artifacturl}" "${tmpdir}" "${buildartifact}"
-	zip -ur "${buildartifact}" "version.json"
+	jar -u "${buildartifact}" "version.json"
 	echo -e "copying to ${serverfiles}...\c"
 	cp "${tmpdir}/${buildartifact}" "${serverfiles}/paperclip.jar"
 	local exitcode=$?
