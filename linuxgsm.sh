@@ -20,6 +20,11 @@ if [ -f ".dev-debug" ]; then
 	set -x
 fi
 
+username="minecraft"
+if [ "$(whoami)" != "$username" ]; then
+  exec sudo -u "$username" -- "$0" "$@"
+fi
+
 version="v19.12.5"
 shortname="core"
 gameservername="core"
